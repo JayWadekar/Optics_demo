@@ -2,6 +2,8 @@
 
 One lecture (Lecture 28: lenses and interference) at three stages, all produced with Claude Code.
 
+**Run the interactive deck online: <https://jaywadekar.github.io/Optics_demo/3_interactive/Demo.html>**
+
 ## 1. Handwritten notes: [`1_handwritten/Handwritten.pdf`](1_handwritten/Handwritten.pdf)
 
 The original lecture as written on a tablet: 9 pages of handwriting, sketches and one
