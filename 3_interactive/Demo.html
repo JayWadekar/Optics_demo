@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Lenses &amp; Interference</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<link rel="stylesheet" href="common/deck.css">
+<style>
+  .controls button.on { background: #bf5700; border-color: #bf5700; color: #fff; }
+  .controls .choice { display: block; width: 520px; margin: 14px 0; text-align: left;
+            font: inherit; font-size: 34px; padding: 10px 22px; border: 2px solid #bbb;
+            border-radius: 12px; background: #f6f6f6; cursor: pointer; }
+  .controls .choice:hover { background: #ececec; }
+  .controls .choice.right { border-color: #2a8a3a; background: #e6f4e8; }
+  .controls .choice.wrong { border-color: #bf5700; background: #fbeee4; }
+  .printed { font-family: Helvetica, Arial, sans-serif; }
+  .lens-label { position: absolute; width: 260px; text-align: center; font-size: 30px; line-height: 1.25; }
+  .lens-label button { font: inherit; font-size: 24px; margin-top: 10px; padding: 4px 14px;
+                       border: 1px solid #bbb; border-radius: 8px; background: #f6f6f6; cursor: pointer; }
+  .imp-box { border: 3px solid #dc2828; padding: 10px 26px; display: inline-block; }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- ============================== title ============================== -->
+<section class="slide" id="title">
+  <div class="at title-main">Lenses &amp; Interference</div>
+  <div class="at title-sub">Lecture 28 — an interactive version</div>
+  <div class="at title-who gray" style="font-size:32px">→ / space: next &nbsp;·&nbsp; ←: back &nbsp;·&nbsp; F: full screen &nbsp;·&nbsp; drag the sliders to explore</div>
+  <canvas id="title-rays" style="left:0; top:680px; width:1920px; height:360px"></canvas>
+</section>
+
+<!-- ======================= near-sighted eye ========================== -->
+<section class="slide" id="eye">
+  <h1 class="title">Correcting a near-sighted eye</h1>
+  <div class="at" style="left:70px; top:130px; font-size:34px">
+    Q) Glasses with power $P > -0.25$ D. &nbsp;What is the min far point of the eye?
+    <span class="gray" style="margin-left:30px">$P = \dfrac1f$ &nbsp;($f$ in m, $P$ in diopters)</span>
+  </div>
+  <canvas id="eye-canvas" style="left:40px; top:230px; width:1200px; height:680px"></canvas>
+  <div class="controls" style="left:1270px; top:230px; width:610px">
+    <div class="row"><label for="eye-d">far point</label>
+      <input type="range" id="eye-d" min="-0.6" max="1" step="0.01" value="-0.3"><output></output></div>
+    <div class="row"><label for="eye-p">glasses $P$</label>
+      <input type="range" id="eye-p" min="-5" max="2" step="0.05" value="0"><output style="width:130px"></output></div>
+    <div class="row"><button id="eye-rx">Prescribe</button><button id="eye-none">No glasses</button></div>
+    <div class="row">Needed: $P = -1/d_{\text{far}}$ ≈ <b id="eye-need"></b>&nbsp;D</div>
+    <div id="eye-status" style="min-height:70px; font-size:28px"></div>
+  </div>
+  <div class="at" style="left:1290px; top:640px; width:590px; font-size:32px">
+    <div data-step="1">
+      $\dfrac1f = \dfrac1{d_o} + \dfrac1{d_i}$, &nbsp; $d_o = \infty$, &nbsp; $d_i = -d_{\text{far}}$<br>
+      $\Rightarrow\; P = \dfrac1f = -\dfrac{1}{d_{\text{far}}}$
+    </div>
+    <div data-step="2" style="margin-top:22px">
+      $-\dfrac{1}{d_{\text{far}}} > -0.25 \;\Rightarrow\;$ <span class="orange"><b>$d_{\text{far}} > 4$ m</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= lensmaker explorer ======================== -->
+<section class="slide" id="lensmaker">
+  <h1 class="title">Lens maker's formula</h1>
+  <div class="at" style="left:40px; width:1180px; top:140px; text-align:center; font-size:40px">
+    <span class="imp-box">$\dfrac1f = \left(\dfrac{n_{\text{lens}}}{n_{\text{medium}}} - 1\right)\left(\dfrac{1}{R_1} - \dfrac{1}{R_2}\right)$</span>
+  </div>
+  <canvas id="lm-canvas" style="left:40px; top:300px; width:1180px; height:720px"></canvas>
+  <div class="controls" style="left:1250px; top:140px; width:640px; font-size:26px">
+    <div class="row"><label for="lm-r1" style="width:110px">$R_1$</label>
+      <input type="range" id="lm-r1" min="-250" max="250" step="1" value="50"><output style="width:130px"></output></div>
+    <div class="row"><label for="lm-r2" style="width:110px">$R_2$</label>
+      <input type="range" id="lm-r2" min="-250" max="250" step="1" value="-50"><output style="width:130px"></output></div>
+    <div class="row"><label for="lm-nl" style="width:110px">$n_{\text{lens}}$</label>
+      <input type="range" id="lm-nl" min="1" max="2" step="0.01" value="1.5"><output style="width:130px"></output></div>
+    <div class="row"><label for="lm-nm" style="width:110px">$n_{\text{medium}}$</label>
+      <input type="range" id="lm-nm" min="1" max="1.8" step="0.01" value="1"><output style="width:130px"></output></div>
+    <div class="row"><button data-medium="1">in air</button><button data-medium="1.33">in water</button>
+      <label style="width:auto; margin-left:12px"><input type="checkbox" id="lm-sph"> show spheres</label></div>
+    <div class="row" style="margin-top:14px">$f$ = <b id="lm-f"></b> <span style="margin-left:30px">$P$ = <b id="lm-P"></b></span></div>
+    <div class="row"><b id="lm-shape"></b>, <span id="lm-thick"></span></div>
+    <div class="row" style="font-size:30px"><b id="lm-kind"></b></div>
+    <div class="hint">Try: flatten one side; make both sides curve the same way; put the lens in water, then set $n_{\text{medium}} > n_{\text{lens}}$.</div>
+  </div>
+  <div class="at" data-step="1" style="left:1270px; top:800px; width:610px; font-size:30px">
+    Centre of sphere on the <b>right</b> of the surface: $R > 0$<br>
+    Centre of sphere on the <b>left</b>: $R < 0$<br>
+    <span class="gray">($R_1$: surface facing the object; tick “show spheres”)</span>
+  </div>
+</section>
+
+<!-- ========================= lens shapes ============================= -->
+<section class="slide" id="shapes">
+  <h1 class="title">Six lens shapes</h1>
+  <div class="at" style="left:0; right:0; top:140px; text-align:center; font-size:34px">
+    Alternate heuristic: if the side towards the object is <b>convex</b> $\Rightarrow R > 0$
+    <span class="gray">&nbsp;(front of spoon = convex, back = concave)</span>
+  </div>
+  <canvas id="sh-canvas" style="left:60px; top:250px; width:1800px; height:230px"></canvas>
+  <div class="lens-label" style="left:80px; top:500px">Double<br>convex
+    <div data-step="1" class="blue">$R_1>0,\ R_2<0$<br>$f>0$</div>
+    <button data-c1="0.05" data-c2="-0.05">Explore →</button></div>
+  <div class="lens-label" style="left:380px; top:500px">Plano<br>convex
+    <div data-step="1" class="blue">$R_1=\infty,\ R_2<0$<br>$f>0$</div>
+    <button data-c1="0" data-c2="-0.07">Explore →</button></div>
+  <div class="lens-label" style="left:680px; top:500px">Meniscus<br>&nbsp;
+    <div data-step="1" class="blue">$R_1<0,\ R_2<0$<br>$f = ?$ <span class="gray" style="font-size:24px">(here $f<0$)</span></div>
+    <button data-c1="-0.07" data-c2="-0.03">Explore →</button></div>
+  <div class="lens-label" style="left:980px; top:500px">Meniscus<br>&nbsp;
+    <div data-step="1" class="blue">$R_1>0,\ R_2>0$<br>$f = ?$ <span class="gray" style="font-size:24px">(here $f>0$)</span></div>
+    <button data-c1="0.07" data-c2="0.03">Explore →</button></div>
+  <div class="lens-label" style="left:1280px; top:500px">Plano<br>concave
+    <div data-step="1" class="blue">$R_1=\infty,\ R_2>0$<br>$f<0$</div>
+    <button data-c1="0" data-c2="0.07">Explore →</button></div>
+  <div class="lens-label" style="left:1580px; top:500px">Double<br>concave
+    <div data-step="1" class="blue">$R_1<0,\ R_2>0$<br>$f<0$</div>
+    <button data-c1="-0.05" data-c2="0.05">Explore →</button></div>
+  <ul class="at" data-step="2" style="left:200px; top:840px">
+    <li>Lenses <b>thinner</b> in the middle are <span class="orange">diverging</span></li>
+    <li>Lenses <b>thicker</b> in the middle are <span class="green">converging</span></li>
+  </ul>
+</section>
+
+<!-- ============================ quiz ================================= -->
+<section class="slide" id="quiz">
+  <h1 class="title">Clicker question</h1>
+  <div class="at printed" style="left:120px; top:160px; width:1680px; font-size:36px">
+    <b>26.8 Lensmaker</b><br>
+    The two surfaces of a lens have radii of $r_1 = -20$ cm and $r_2 = +5$ cm.
+    The index of refraction of the lens is $n = 1.52$. What kind of lens is it?
+  </div>
+  <div class="at controls" style="left:120px; top:340px; width:620px; border:none; background:none; padding:0">
+    <button class="choice" data-choice="A">A) Converging</button>
+    <button class="choice" data-choice="B">B) Diverging</button>
+    <button class="choice" data-choice="C">C) Not enough information</button>
+    <div id="qz-msg" style="min-height:90px; font-size:30px; margin-top:16px"></div>
+  </div>
+  <div class="at" data-step="1" style="left:820px; top:360px; width:1000px; font-size:38px">
+    $\dfrac1f = \left(\dfrac{n_{\text{glass}}}{n_{\text{air}}} - 1\right)\left(-\dfrac1{20} - \dfrac15\right) = 0.52\left(-\dfrac{5}{20}\right)$
+    <div style="margin-top:20px">$\Rightarrow\; f \approx -7.7$ cm $< 0$: <span class="orange"><b>diverging</b></span></div>
+    <div class="controls" style="position:static; display:inline-block; margin-top:30px; border:none; background:none; padding:0">
+      <button id="qz-open">Open this lens in the explorer →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 1D interference =========================== -->
+<section class="slide" id="waves">
+  <h1 class="title">Interference of waves</h1>
+  <div class="at" style="left:70px; top:130px; font-size:32px">
+    Waves: a disturbance in a medium that transmits information/energy through it. &nbsp; $v = f\lambda$
+  </div>
+  <canvas id="wv-canvas" style="left:40px; top:200px; width:1200px; height:720px"></canvas>
+  <div class="controls" style="left:1270px; top:200px; width:610px">
+    <div class="hint">Sources A &amp; B emit waves in phase. A is $\Delta d$ further along.</div>
+    <div class="row"><label for="wv-dd" style="width:70px">$\Delta d$</label>
+      <input type="range" id="wv-dd" min="0" max="3" step="0.01" value="2"><output style="width:110px"></output></div>
+    <div class="row"><button id="wv-m">$\Delta d = m\lambda$</button><button id="wv-half">$\Delta d = (m+\frac12)\lambda$</button></div>
+    <div class="row"><button id="wv-play">Pause</button></div>
+    <div class="row" style="font-size:30px"><b id="wv-kind"></b></div>
+    <div class="row">amplitude of A + B: &nbsp;<b id="wv-amp"></b>&nbsp; × one wave</div>
+  </div>
+  <div class="at" style="left:1290px; top:640px; width:590px; font-size:28px">
+    <div><u>Constructive</u>: in phase, amplitudes add</div>
+    <div style="margin-top:6px"><u>Destructive</u>: out of phase, amplitudes subtract</div>
+    <div data-step="2" style="margin-top:22px; font-size:30px; white-space:nowrap">
+      $\Delta d = \begin{cases} m\lambda & \text{constructive}\\ \left(m+\tfrac12\right)\lambda & \text{destructive}\end{cases}$
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 2D ripple tank ============================ -->
+<section class="slide" id="ripple">
+  <h1 class="title">Two sources in 2D</h1>
+  <canvas id="rp-canvas" style="left:40px; top:150px; width:1180px; height:860px"></canvas>
+  <div class="controls" style="left:1250px; top:150px; width:640px">
+    <div class="row"><button id="rp-waves" class="on">Waves</button><button id="rp-int">Intensity</button><button id="rp-play">Pause</button></div>
+    <div class="row"><label for="rp-lam">wavelength</label>
+      <input type="range" id="rp-lam" min="40" max="120" step="1" value="70"><output></output></div>
+    <div class="row"><label for="rp-sep">separation</label>
+      <input type="range" id="rp-sep" min="40" max="420" step="1" value="210"><output></output></div>
+    <div class="row" style="margin-top:14px">$r_A$ = <b id="rp-ra"></b> <span style="margin-left:30px">$r_B$ = <b id="rp-rb"></b></span></div>
+    <div class="row">$\Delta d = |r_A - r_B|$ = <b id="rp-dd"></b></div>
+    <div class="row" style="font-size:30px"><b id="rp-kind"></b></div>
+    <div class="hint">Drag the black dot (the observer). Bright bands: $\Delta d = m\lambda$. Dark bands: $\Delta d = (m+\frac12)\lambda$.</div>
+  </div>
+</section>
+
+<!-- ============================ summary ============================== -->
+<section class="slide" id="summary">
+  <h1 class="title">Summary</h1>
+  <ul class="at" style="left:200px; right:200px; top:190px">
+    <li>Power $P = 1/f$ in diopters ($f$ in m); near-sighted eye: $P = -1/d_{\text{far}}$</li>
+    <li>Lens maker: $\dfrac1f = \left(\dfrac{n_{\text{lens}}}{n_{\text{medium}}} - 1\right)\left(\dfrac{1}{R_1} - \dfrac{1}{R_2}\right)$</li>
+    <li>$f > 0$ converging (thicker in the middle), $f < 0$ diverging (thinner in the middle)</li>
+    <li>Two in-phase sources: constructive if $\Delta d = m\lambda$, destructive if $\Delta d = (m+\frac12)\lambda$</li>
+    <li>More to play with: <a href="https://phet.colorado.edu/sims/html/wave-on-a-string/latest/wave-on-a-string_all.html" target="_blank" class="blue">PhET — Wave on a String</a></li>
+  </ul>
+  <div class="at cite" style="right:60px; bottom:50px">Based on the Lecture 28 notes</div>
+</section>
+
+<div class="deck-progress"></div>
+<div class="deck-number"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script src="common/deck.js"></script>
+<script src="common/plot.js"></script>
+<script src="parts/optics.js"></script>
+<script src="parts/title.js"></script>
+<script src="parts/eye.js"></script>
+<script src="parts/lensmaker.js"></script>
+<script src="parts/shapes.js"></script>
+<script src="parts/quiz.js"></script>
+<script src="parts/waves.js"></script>
+<script src="parts/ripple.js"></script>
+<script>Deck.start();</script>
+</body>
+</html>
